@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using NZWalks.API.Data;
+using NZWalks.API.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,6 +12,11 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<NZWalksDbContext>(options =>
 options.UseSqlServer(builder.Configuration.GetConnectionString("NzWalksConnectionstring")));
+
+//registering repository (class and interface) in the application
+// Scoped is used for whole life spain of the app
+builder.Services.AddScoped<IRegionRepository, RegionRepository>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
