@@ -17,6 +17,7 @@ options.UseSqlServer(builder.Configuration.GetConnectionString("NzWalksConnectio
 //registering repository (class and interface) in the application
 // Scoped is used for whole life spain of the app
 builder.Services.AddScoped<IRegionRepository, RegionRepository>();
+builder.Services.AddScoped<IWalkRepository, WalksRepository>();
 
 builder.Services.AddAutoMapper(typeof(AutoMapperProfiles));
 
