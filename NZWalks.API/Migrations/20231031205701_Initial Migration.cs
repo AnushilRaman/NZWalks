@@ -12,7 +12,7 @@ namespace NZWalks.API.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "diffculties",
+                name: "difficulties",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
@@ -20,7 +20,7 @@ namespace NZWalks.API.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_diffculties", x => x.Id);
+                    table.PrimaryKey("PK_difficulties", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -53,9 +53,9 @@ namespace NZWalks.API.Migrations
                 {
                     table.PrimaryKey("PK_walks", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_walks_diffculties_DiffcultyId",
+                        name: "FK_walks_difficulties_DiffcultyId",
                         column: x => x.DiffcultyId,
-                        principalTable: "diffculties",
+                        principalTable: "difficulties",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
@@ -84,7 +84,7 @@ namespace NZWalks.API.Migrations
                 name: "walks");
 
             migrationBuilder.DropTable(
-                name: "diffculties");
+                name: "difficulties");
 
             migrationBuilder.DropTable(
                 name: "regions");

@@ -1,9 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using NZWalks.API.Data;
-using NZWalks.API.Mappings;
 using NZWalks.API.Models.Domain;
 using NZWalks.API.Models.DTO;
 using NZWalks.API.Repositories;
@@ -31,6 +28,7 @@ namespace NZWalks.API.Controllers
 
             return Ok(autoMapperProfiles.Map<List<RegionDto>>(regions));
         }
+
         [HttpGet]
         [Route("{id:Guid}")]
         public async Task<IActionResult> GetById([FromRoute] Guid id)
@@ -89,6 +87,5 @@ namespace NZWalks.API.Controllers
             var regionDto = autoMapperProfiles.Map<RegionDto>(regionDomainModel);
             return Ok(regionDto);
         }
-
     }
 }
