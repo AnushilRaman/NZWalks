@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using NZWalks.API.CustomActionFilter;
 using NZWalks.API.Models.Domain;
 using NZWalks.API.Models.DTO;
 using NZWalks.API.Repositories;
@@ -43,52 +44,39 @@ namespace NZWalks.API.Controllers
         }
 
         [HttpPost]
+        [ValidateModelAttribute]
         public async Task<IActionResult> Create([FromBody] AddRegionRequestDto addRegionRequestDto)
         {
-            if (ModelState.IsValid)
-            {
-                //Map or convert Dto to Domain Model by using automapper
+            //Map or convert Dto to Domain Model by using automapper
 
-                var regionDomainModel = autoMapperProfiles.Map<Region>(addRegionRequestDto);
+            var regionDomainModel = autoMapperProfiles.Map<Region>(addRegionRequestDto);
 
-                // Use Domain Model to Create Region
-                regionDomainModel = await _regionRepository.CreateAsync(regionDomainModel);
+            // Use Domain Model to Create Region
+            regionDomainModel = await _regionRepository.CreateAsync(regionDomainModel);
 
-                //Map Domain Model back to Dto by using automapper
+            //Map Domain Model back to Dto by using automapper
 
-                var regionDto = autoMapperProfiles.Map<RegionDto>(regionDomainModel);
-                return CreatedAtAction(nameof(GetById), new { id = regionDto.Id }, regionDto);
-            }
-            else
-            {
-                return BadRequest(ModelState);
-            }
+            var regionDto = autoMapperProfiles.Map<RegionDto>(regionDomainModel);
+            return CreatedAtAction(nameof(GetById), new { id = regionDto.Id }, regionDto);
 
         }
 
         [HttpPut]
         [Route("{id:Guid}")]
+        [ValidateModelAttribute]
         public async Task<IActionResult> Update([FromRoute] Guid id, [FromBody] UpdateRegionRequestDto updateRegionRequestDto)
         {
-            if (ModelState.IsValid)
-            {
-                //Map or convert Dto to Domain Model by using automapper
-                var regionDomainModel = autoMapperProfiles.Map<Region>(updateRegionRequestDto);
+            //Map or convert Dto to Domain Model by using automapper
+            var regionDomainModel = autoMapperProfiles.Map<Region>(updateRegionRequestDto);
 
-                regionDomainModel = await _regionRepository.UpdateAsync(id, regionDomainModel);
+            regionDomainModel = await _regionRepository.UpdateAsync(id, regionDomainModel);
 
-                if (regionDomainModel == null)
-                { return NotFound(); }
+            if (regionDomainModel == null)
+            { return NotFound(); }
 
-                //Map Domain Model back to Dto by using automapper
-                var regionDto = autoMapperProfiles.Map<RegionDto>(regionDomainModel);
-                return Ok(regionDto);
-            }
-            else
-            {
-                return BadRequest(ModelState);
-            }
-
+            //Map Domain Model back to Dto by using automapper
+            var regionDto = autoMapperProfiles.Map<RegionDto>(regionDomainModel);
+            return Ok(regionDto);
         }
 
         [HttpDelete]

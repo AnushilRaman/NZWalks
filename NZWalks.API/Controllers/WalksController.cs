@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using NZWalks.API.CustomActionFilter;
 using NZWalks.API.Models.Domain;
 using NZWalks.API.Models.DTO;
 using NZWalks.API.Repositories;
@@ -19,18 +20,12 @@ namespace NZWalks.API.Controllers
             _autoMapperProfiles = autoMapperProfiles;
         }
         [HttpPost]
+        [ValidateModelAttribute]
         public async Task<IActionResult> Create([FromBody] AddWalksRequestDto addWalksRequestDto)
         {
-            if (ModelState.IsValid)
-            {
-                var walkDomainmodel = _autoMapperProfiles.Map<Walk>(addWalksRequestDto);
-                await _walkRepository.CreateAsync(walkDomainmodel);
-                return Ok(_autoMapperProfiles.Map<WalksDto>(walkDomainmodel));
-            }
-            else
-            {
-                return BadRequest(ModelState);
-            }
+            var walkDomainmodel = _autoMapperProfiles.Map<Walk>(addWalksRequestDto);
+            await _walkRepository.CreateAsync(walkDomainmodel);
+            return Ok(_autoMapperProfiles.Map<WalksDto>(walkDomainmodel));
 
         }
 
@@ -55,20 +50,14 @@ namespace NZWalks.API.Controllers
         }
         [HttpPut]
         [Route("{id:Guid}")]
+        [ValidateModelAttribute]
         public async Task<IActionResult> Update([FromRoute] Guid id, UpdateWalksRequestDto updateWalksRequestDto)
         {
-            if (ModelState.IsValid)
-            {
-                var walkDomainmodel = _autoMapperProfiles.Map<Walk>(updateWalksRequestDto);
-                walkDomainmodel = await _walkRepository.UpdateWalkAsync(id, walkDomainmodel);
-                if (walkDomainmodel == null)
-                    return NotFound();
-                return Ok(_autoMapperProfiles.Map<WalksDto>(walkDomainmodel));
-            }
-            else
-            {
-                return BadRequest(ModelState);
-            }
+            var walkDomainmodel = _autoMapperProfiles.Map<Walk>(updateWalksRequestDto);
+            walkDomainmodel = await _walkRepository.UpdateWalkAsync(id, walkDomainmodel);
+            if (walkDomainmodel == null)
+                return NotFound();
+            return Ok(_autoMapperProfiles.Map<WalksDto>(walkDomainmodel));
         }
 
 
