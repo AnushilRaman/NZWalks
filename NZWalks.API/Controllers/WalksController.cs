@@ -21,9 +21,17 @@ namespace NZWalks.API.Controllers
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] AddWalksRequestDto addWalksRequestDto)
         {
-            var walkDomainmodel = _autoMapperProfiles.Map<Walk>(addWalksRequestDto);
-            await _walkRepository.CreateAsync(walkDomainmodel);
-            return Ok(_autoMapperProfiles.Map<WalksDto>(walkDomainmodel));
+            if (ModelState.IsValid)
+            {
+                var walkDomainmodel = _autoMapperProfiles.Map<Walk>(addWalksRequestDto);
+                await _walkRepository.CreateAsync(walkDomainmodel);
+                return Ok(_autoMapperProfiles.Map<WalksDto>(walkDomainmodel));
+            }
+            else
+            {
+                return BadRequest(ModelState);
+            }
+
         }
 
         [HttpGet]
@@ -47,15 +55,23 @@ namespace NZWalks.API.Controllers
         }
         [HttpPut]
         [Route("{id:Guid}")]
-        public async Task<IActionResult> Update([FromRoute] Guid id,UpdateWalksRequestDto updateWalksRequestDto)
+        public async Task<IActionResult> Update([FromRoute] Guid id, UpdateWalksRequestDto updateWalksRequestDto)
         {
-            var walkDomainmodel = _autoMapperProfiles.Map<Walk>(updateWalksRequestDto);
-            walkDomainmodel = await _walkRepository.UpdateWalkAsync(id, walkDomainmodel);
-            if (walkDomainmodel == null)
-                return NotFound();
-
-            return Ok(_autoMapperProfiles.Map<WalksDto>(walkDomainmodel));
+            if (ModelState.IsValid)
+            {
+                var walkDomainmodel = _autoMapperProfiles.Map<Walk>(updateWalksRequestDto);
+                walkDomainmodel = await _walkRepository.UpdateWalkAsync(id, walkDomainmodel);
+                if (walkDomainmodel == null)
+                    return NotFound();
+                return Ok(_autoMapperProfiles.Map<WalksDto>(walkDomainmodel));
+            }
+            else
+            {
+                return BadRequest(ModelState);
+            }
         }
+
+
         [HttpDelete]
         [Route("{id:Guid}")]
         public async Task<IActionResult> Delete([FromRoute] Guid id)
