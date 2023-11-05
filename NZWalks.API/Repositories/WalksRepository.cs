@@ -18,10 +18,32 @@ namespace NZWalks.API.Repositories
             return walk;
         }
 
-       
-        public async Task<List<Walk>> GetAllAsync()
+
+        public async Task<List<Walk>> GetAllAsync(string? filterOn, string? filterQuery)
         {
-            return await _dbContext.Walks.Include("difficulty").Include("region").ToListAsync();
+            var walks = _dbContext.Walks.Include("difficulty").Include("region").AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(filterOn) && !string.IsNullOrWhiteSpace(filterQuery))
+            {
+                if (filterOn.Equals("Name", StringComparison.OrdinalIgnoreCase))
+                {
+                    walks = walks.Where(x => x.Name.Contains(filterQuery));
+                }
+                if (filterOn.Equals("lengthInKm", StringComparison.OrdinalIgnoreCase))
+                {
+                    walks = walks.Where(x => x.LengthInKm == Convert.ToDouble(filterQuery));
+                }
+                if (filterOn.Equals("region", StringComparison.OrdinalIgnoreCase))
+                {
+                    walks = walks.Where(x => x.region.Code == filterQuery);
+                }
+                if (filterOn.Equals("difficulty", StringComparison.OrdinalIgnoreCase))
+                {
+                    walks = walks.Where(x => x.difficulty.Name == filterQuery);
+                }
+
+            }
+            return await walks.ToListAsync();
         }
 
         public async Task<Walk> GetByid(Guid id)
@@ -32,7 +54,7 @@ namespace NZWalks.API.Repositories
                 FirstOrDefaultAsync(x => x.Id == id);
         }
 
-        public async Task<Walk> UpdateWalkAsync(Guid id,Walk walk)
+        public async Task<Walk> UpdateWalkAsync(Guid id, Walk walk)
         {
             var existingWalk = await _dbContext.Walks.FirstOrDefaultAsync(x => x.Id == id);
             if (existingWalk == null)
@@ -46,7 +68,7 @@ namespace NZWalks.API.Repositories
             existingWalk.LengthInKm = walk.LengthInKm;
             existingWalk.RegionId = walk.RegionId;
 
-             await _dbContext.SaveChangesAsync();
+            await _dbContext.SaveChangesAsync();
             return existingWalk;
         }
 
@@ -57,7 +79,7 @@ namespace NZWalks.API.Repositories
             {
                 return null;
             }
-             _dbContext.Walks.Remove(existingWalk);
+            _dbContext.Walks.Remove(existingWalk);
             await _dbContext.SaveChangesAsync();
             return existingWalk;
         }
