@@ -26,6 +26,7 @@ options.UseSqlServer(builder.Configuration.GetConnectionString("NzWalksAuthConne
 // Scoped is used for whole life spain of the app
 builder.Services.AddScoped<IRegionRepository, RegionRepository>();
 builder.Services.AddScoped<IWalkRepository, WalksRepository>();
+builder.Services.AddScoped<ITokenRepository, TokenRepository>();
 
 builder.Services.AddAutoMapper(typeof(AutoMapperProfiles));
 
