@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
@@ -6,6 +7,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using NZWalks.API.Data;
 using NZWalks.API.Mappings;
+using NZWalks.API.Middlewares;
 using NZWalks.API.Repositories;
 using Serilog;
 using System.Text;
@@ -14,7 +16,11 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-var logger = new LoggerConfiguration().WriteTo.Console().MinimumLevel.Warning().CreateLogger();
+var logger = new LoggerConfiguration().
+    WriteTo.Console().
+    WriteTo.File("Logs/NzWalks_Log.txt", rollingInterval: RollingInterval.Day).
+    MinimumLevel.Warning().CreateLogger();
+
 builder.Logging.ClearProviders();
 builder.Logging.AddSerilog(logger);
 
@@ -108,6 +114,9 @@ if (app.Environment.IsDevelopment())
         RequestPath = "/Images"
     });
 }
+
+// Custom Middleware for global exception Handling.
+app.UseMiddleware<CustomExceptionHandlerMiddleware>();
 
 app.UseHttpsRedirection();
 

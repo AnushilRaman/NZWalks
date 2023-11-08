@@ -20,7 +20,7 @@ namespace NZWalks.API.Repositories
 
 
         public async Task<List<Walk>> GetAllAsync(string? filterOn, string? filterQuery,
-            string? sortBy, bool isAscending, int pageNumber, int pageSize)
+            string? sortBy, bool isAscending, int pageNumber = 1, int pageSize = 100)
         {
             var walks = _dbContext.Walks.Include("difficulty").Include("region").AsQueryable();
 
