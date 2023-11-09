@@ -2,7 +2,7 @@
 using NZWlaks.UI.Models;
 using System.Diagnostics;
 
-namespace NZWlaks.UI.Controllers
+namespace NZWalks.UI.Controllers
 {
     public class HomeController : Controller
     {

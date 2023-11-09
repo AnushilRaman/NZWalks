@@ -1,4 +1,4 @@
-namespace NZWlaks.UI.Models
+namespace NZWalks.UI.Models
 {
     public class ErrorViewModel
     {
